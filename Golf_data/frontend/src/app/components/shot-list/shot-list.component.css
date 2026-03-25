@@ -1,0 +1,36 @@
+/* shot-list.component.css – Scoped styles for the shot list table */
+
+/* Remove the default bottom border on the last table row so it doesn't double
+   up with the card's own border */
+.table > tbody > tr:last-child > td {
+  border-bottom: none;
+}
+
+/* Prevent the header row from wrapping on tablets where horizontal space is
+   slightly constrained */
+thead th {
+  white-space: nowrap;
+}
+
+/* Give the sub-label (mph, rpm, yds) a slightly smaller weight so it doesn't
+   compete with the main header text */
+thead small {
+  display: block;
+  line-height: 1.2;
+}
+
+/* Slightly increase row height for comfortable reading */
+tbody tr {
+  line-height: 2;
+}
+
+/* On hover, make the row highlight more prominent than Bootstrap's default */
+.table-hover > tbody > tr:hover > td {
+  background-color: #e8f5e9; /* light green hint matches the golf theme */
+}
+
+/* Make the action buttons sit comfortably in their cell */
+td .btn-sm {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.8rem;
+}

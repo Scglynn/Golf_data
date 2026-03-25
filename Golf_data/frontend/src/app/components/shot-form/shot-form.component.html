@@ -1,0 +1,242 @@
+<!-- =============================================================================
+     shot-form.component.html – Add / Edit shot form
+     =============================================================================
+     Uses Bootstrap 5 card layout and form validation classes.
+     Every field displays an inline error message when it is invalid AND has
+     been touched (either by tabbing past it or by submitting the form).
+     ============================================================================= -->
+
+<div class="row justify-content-center mt-4">
+  <div class="col-12 col-md-8 col-lg-6">
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white">
+        <!-- Title changes dynamically based on whether we are adding or editing -->
+        <h4 class="mb-0">
+          {{ isEditMode ? 'Edit Shot' : 'Add Shot' }}
+        </h4>
+      </div>
+
+      <div class="card-body">
+        <form [formGroup]="shotForm" (ngSubmit)="onSubmit()" novalidate>
+
+          <!-- ----------------------------------------------------------------
+               Club selection (dropdown)
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="club" class="form-label fw-semibold">Club</label>
+            <select
+              id="club"
+              formControlName="club"
+              class="form-select"
+              [class.is-invalid]="getControl('club').invalid && getControl('club').touched"
+            >
+              <option value="" disabled>Select a club…</option>
+              <option *ngFor="let c of clubs" [value]="c">{{ c }}</option>
+            </select>
+            <div class="invalid-feedback">
+              Please select a club.
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
+               Ball Speed (mph)
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="ball_speed" class="form-label fw-semibold">
+              Ball Speed <span class="text-muted fw-normal">(mph)</span>
+            </label>
+            <input
+              type="number"
+              id="ball_speed"
+              formControlName="ball_speed"
+              class="form-control"
+              [class.is-invalid]="getControl('ball_speed').invalid && getControl('ball_speed').touched"
+              placeholder="e.g. 150"
+              step="0.1"
+            />
+            <div class="invalid-feedback">
+              <ng-container *ngIf="getControl('ball_speed').errors as errs">
+                <span *ngIf="errs['required']">Ball speed is required.</span>
+                <span *ngIf="errs['min']">Must be at least 0 mph.</span>
+                <span *ngIf="errs['max']">Must be 250 mph or less.</span>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
+               Launch Angle (degrees)
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="launch_angle" class="form-label fw-semibold">
+              Launch Angle <span class="text-muted fw-normal">(degrees)</span>
+            </label>
+            <input
+              type="number"
+              id="launch_angle"
+              formControlName="launch_angle"
+              class="form-control"
+              [class.is-invalid]="getControl('launch_angle').invalid && getControl('launch_angle').touched"
+              placeholder="e.g. 14.5"
+              step="0.1"
+            />
+            <div class="invalid-feedback">
+              <ng-container *ngIf="getControl('launch_angle').errors as errs">
+                <span *ngIf="errs['required']">Launch angle is required.</span>
+                <span *ngIf="errs['min']">Minimum is -10°.</span>
+                <span *ngIf="errs['max']">Maximum is 60°.</span>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
+               Back Spin (rpm)
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="back_spin" class="form-label fw-semibold">
+              Back Spin <span class="text-muted fw-normal">(rpm)</span>
+            </label>
+            <input
+              type="number"
+              id="back_spin"
+              formControlName="back_spin"
+              class="form-control"
+              [class.is-invalid]="getControl('back_spin').invalid && getControl('back_spin').touched"
+              placeholder="e.g. 2500"
+              step="1"
+            />
+            <div class="invalid-feedback">
+              <ng-container *ngIf="getControl('back_spin').errors as errs">
+                <span *ngIf="errs['required']">Back spin is required.</span>
+                <span *ngIf="errs['min']">Minimum is -10,000 rpm.</span>
+                <span *ngIf="errs['max']">Maximum is 10,000 rpm.</span>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
+               Side Spin (rpm, can be negative)
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="side_spin" class="form-label fw-semibold">
+              Side Spin
+              <span class="text-muted fw-normal">(rpm · negative = draw, positive = fade)</span>
+            </label>
+            <input
+              type="number"
+              id="side_spin"
+              formControlName="side_spin"
+              class="form-control"
+              [class.is-invalid]="getControl('side_spin').invalid && getControl('side_spin').touched"
+              placeholder="e.g. -200"
+              step="1"
+            />
+            <div class="invalid-feedback">
+              <ng-container *ngIf="getControl('side_spin').errors as errs">
+                <span *ngIf="errs['required']">Side spin is required.</span>
+                <span *ngIf="errs['min']">Minimum is -5,000 rpm.</span>
+                <span *ngIf="errs['max']">Maximum is 5,000 rpm.</span>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
+               Club Path (degrees, can be negative)
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="club_path" class="form-label fw-semibold">
+              Club Path
+              <span class="text-muted fw-normal">(degrees · positive = in-to-out, negative = out-to-in)</span>
+            </label>
+            <input
+              type="number"
+              id="club_path"
+              formControlName="club_path"
+              class="form-control"
+              [class.is-invalid]="getControl('club_path').invalid && getControl('club_path').touched"
+              placeholder="e.g. 2.5"
+              step="0.1"
+            />
+            <div class="invalid-feedback">
+              <ng-container *ngIf="getControl('club_path').errors as errs">
+                <span *ngIf="errs['required']">Club path is required.</span>
+                <span *ngIf="errs['min']">Minimum is -20°.</span>
+                <span *ngIf="errs['max']">Maximum is 20°.</span>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
+               Carry Distance (yards)
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="carry_distance" class="form-label fw-semibold">
+              Carry Distance <span class="text-muted fw-normal">(yards)</span>
+            </label>
+            <input
+              type="number"
+              id="carry_distance"
+              formControlName="carry_distance"
+              class="form-control"
+              [class.is-invalid]="getControl('carry_distance').invalid && getControl('carry_distance').touched"
+              placeholder="e.g. 240"
+              step="0.1"
+            />
+            <div class="invalid-feedback">
+              <ng-container *ngIf="getControl('carry_distance').errors as errs">
+                <span *ngIf="errs['required']">Carry distance is required.</span>
+                <span *ngIf="errs['min']">Must be 0 or more yards.</span>
+                <span *ngIf="errs['max']">Must be 500 yards or less.</span>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
+               Total Distance (yards)
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="total_distance" class="form-label fw-semibold">
+              Total Distance <span class="text-muted fw-normal">(yards)</span>
+            </label>
+            <input
+              type="number"
+              id="total_distance"
+              formControlName="total_distance"
+              class="form-control"
+              [class.is-invalid]="getControl('total_distance').invalid && getControl('total_distance').touched"
+              placeholder="e.g. 265"
+              step="0.1"
+            />
+            <div class="invalid-feedback">
+              <ng-container *ngIf="getControl('total_distance').errors as errs">
+                <span *ngIf="errs['required']">Total distance is required.</span>
+                <span *ngIf="errs['min']">Must be 0 or more yards.</span>
+                <span *ngIf="errs['max']">Must be 600 yards or less.</span>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
+               Action buttons
+               ---------------------------------------------------------------- -->
+          <div class="d-flex gap-2 mt-4">
+            <button
+              type="submit"
+              class="btn btn-success flex-grow-1"
+            >
+              Save Shot
+            </button>
+            <a
+              routerLink="/"
+              class="btn btn-outline-secondary"
+            >
+              Cancel
+            </a>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>

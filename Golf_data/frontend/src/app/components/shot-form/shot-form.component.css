@@ -1,0 +1,23 @@
+/* shot-form.component.css – Scoped styles for the Add/Edit shot form */
+
+/* Tighten the gap between label and input by overriding Bootstrap's default
+   margin-bottom on form-label */
+.form-label {
+  margin-bottom: 0.25rem;
+}
+
+/* Visually group the unit hints so they don't compete with the label text */
+.form-label .text-muted {
+  font-size: 0.85em;
+}
+
+/* Make the card stand out a little more on the grey page background */
+.card {
+  border: none;
+}
+
+/* Keep the submit/cancel button row from wrapping on very narrow screens */
+.d-flex.gap-2 {
+  flex-wrap: nowrap;
+  min-width: 0;
+}

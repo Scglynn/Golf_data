@@ -1,0 +1,8 @@
+/* app.component.css – Styles scoped to the root AppComponent shell */
+
+/* Ensure the main content area has a minimum height so the footer (if added
+   later) is always pushed to the bottom of the viewport */
+main.container {
+  min-height: calc(100vh - 56px); /* 56px = Bootstrap default navbar height */
+  padding-bottom: 2rem;
+}
