@@ -1,0 +1,19 @@
+/* Dashed upload drop-zone */
+.upload-zone {
+  border: 2px dashed #ced4da;
+  border-radius: 0.5rem;
+  background-color: #f8f9fa;
+  min-height: 180px;
+  transition: border-color 0.2s;
+}
+
+/* Placeholder emoji icons in analysis cards */
+.analysis-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+/* Greyed-out state for placeholder analysis cards */
+.analysis-card {
+  opacity: 0.75;
+}

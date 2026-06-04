@@ -10,6 +10,7 @@
 // =============================================================================
 
 const db = require('../db');
+const { analyzeShot } = require('../services/analysisService');
 
 // ---------------------------------------------------------------------------
 // Helper – normalise a row returned from the DB so numeric strings become JS
@@ -135,7 +136,11 @@ const createShot = async (req, res) => {
     );
 
     // 201 Created is the semantically correct status for a successful INSERT.
-    res.status(201).json(normaliseRow(result.rows[0]));
+    // The response includes both the saved shot record and swing feedback so the
+    // client can display analysis immediately without a second round-trip.
+    const shot = normaliseRow(result.rows[0]);
+    const feedback = analyzeShot(shot);
+    res.status(201).json({ shot, feedback });
   } catch (err) {
     console.error('createShot error:', err);
     res.status(500).json({ error: 'Failed to create shot' });
@@ -243,10 +248,42 @@ const deleteShot = async (req, res) => {
   }
 };
 
+// ---------------------------------------------------------------------------
+// GET /api/shots/:id/feedback
+// ---------------------------------------------------------------------------
+/**
+ * Fetch a single shot by id and return it alongside fresh swing feedback.
+ * Useful for re-analysing shots that were saved before the feedback engine
+ * existed, or for viewing analysis from the shot list.
+ */
+const getShotFeedback = async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+
+  if (isNaN(id)) {
+    return res.status(400).json({ error: 'Shot id must be a number' });
+  }
+
+  try {
+    const result = await db.query('SELECT * FROM shots WHERE id = $1', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: `Shot with id ${id} not found` });
+    }
+
+    const shot = normaliseRow(result.rows[0]);
+    const feedback = analyzeShot(shot);
+    res.json({ shot, feedback });
+  } catch (err) {
+    console.error('getShotFeedback error:', err);
+    res.status(500).json({ error: 'Failed to retrieve shot feedback' });
+  }
+};
+
 module.exports = {
   getAllShots,
   getShotById,
   createShot,
   updateShot,
   deleteShot,
+  getShotFeedback,
 };

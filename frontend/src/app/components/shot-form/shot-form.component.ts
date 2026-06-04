@@ -16,7 +16,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ShotService } from '../../services/shot.service';
-import { Shot } from '../../models/shot.model';
+import { Shot, FeedbackItem, ShotCreateResponse } from '../../models/shot.model';
 
 @Component({
   selector: 'app-shot-form',
@@ -33,6 +33,14 @@ export class ShotFormComponent implements OnInit {
 
   /** true when the route contains an :id param (edit mode), false for add mode */
   isEditMode = false;
+
+  // Feedback panel state — only used in add mode after a successful submit
+  /** When true, hides the form and shows the feedback panel instead */
+  showFeedback = false;
+  /** Feedback items returned by the server after the shot is saved */
+  feedbackItems: FeedbackItem[] = [];
+  /** The shot record that was just saved, displayed in the feedback panel header */
+  savedShot: Shot | null = null;
 
   /**
    * Complete list of valid club names shown in the dropdown.
@@ -207,10 +215,27 @@ export class ShotFormComponent implements OnInit {
       });
     } else {
       this.shotService.createShot(payload).subscribe({
-        next: () => void this.router.navigate(['/']),
+        next: (response: ShotCreateResponse) => {
+          // Show the feedback panel instead of immediately navigating away so
+          // the user can review their swing analysis before deciding what to do next.
+          this.savedShot = response.shot;
+          this.feedbackItems = response.feedback;
+          this.showFeedback = true;
+        },
         error: (err: unknown) => console.error('Failed to create shot:', err),
       });
     }
+  }
+
+  /**
+   * Reset the form and feedback state so the user can log another shot.
+   * Called from the "Log Another Shot" button in the feedback panel.
+   */
+  logAnother(): void {
+    this.shotForm.reset();
+    this.savedShot = null;
+    this.feedbackItems = [];
+    this.showFeedback = false;
   }
 
   // -------------------------------------------------------------------------

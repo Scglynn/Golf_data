@@ -117,6 +117,127 @@ npm start
 
 Open `http://localhost:4200` in your browser.
 
+---
+
+## UI previews
+
+### Shot list — reviewing previous shots
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│  Golf Shot Tracker                                          [+ Add New Shot]         │
+├──────────┬────────────┬──────────────┬───────────┬──────────┬──────────┬────────────┤
+│  Club    │ Ball Speed │ Launch Angle │ Back Spin │Side Spin │Club Path │ Carry Total│
+│          │   (mph)    │     (°)      │   (rpm)   │  (rpm)   │   (°)    │  (yds)(yds)│
+├──────────┼────────────┼──────────────┼───────────┼──────────┼──────────┼────────────┤
+│ Driver   │    158.3   │    10.8      │   2,450   │   -180   │    2.5   │  248  272  │
+│ 7 Iron   │    120.1   │    16.2      │   5,800   │    230   │   -1.2   │  168  178  │
+│ Pitching │     98.4   │    21.5      │   8,100   │     90   │    0.8   │  130  135  │
+│ Driver   │    162.0   │    11.4      │   2,200   │   -350   │    3.1   │  255  280  │
+├──────────┴────────────┴──────────────┴───────────┴──────────┴──────────┴────────────┤
+│  4 shots recorded                                                                    │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+  Side spin: blue = draw (−), red = fade (+)   Club path: blue = in-to-out, red = out-to-in
+```
+
+---
+
+### Add shot — logging a new shot
+
+```
+┌─────────────────────────────────┐
+│  Add Shot                       │   ← header turns "Edit Shot" when editing
+├─────────────────────────────────┤
+│  Club                           │
+│  [ Select a club…          ▼ ]  │   Driver / 3 Wood / 5 Iron / … / Putter
+│                                 │
+│  Ball Speed  (mph)              │
+│  [ 158.3                     ]  │
+│                                 │
+│  Launch Angle  (degrees)        │
+│  [ 10.8                      ]  │
+│                                 │
+│  Back Spin  (rpm)               │
+│  [ 2450                      ]  │
+│                                 │
+│  Side Spin  (rpm · − draw, + fade)│
+│  [ -180                      ]  │
+│                                 │
+│  Club Path  (° · + in-to-out)   │
+│  [ 2.5                       ]  │
+│                                 │
+│  Carry Distance  (yards)        │
+│  [ 248                       ]  │
+│                                 │
+│  Total Distance  (yards)        │
+│  [ 272                       ]  │
+│                                 │
+│  [    Save Shot    ] [ Cancel ] │
+└─────────────────────────────────┘
+
+  After saving, a feedback panel replaces the form:
+
+┌─────────────────────────────────┐
+│ ✓  Shot Saved!                  │
+│    Driver — 248 yds carry / 272 yds total
+├─────────────────────────────────┤
+│  Swing Feedback                 │
+│                                 │
+│  ✅ Good ball speed             │
+│     158 mph is in the right     │
+│     range for your Driver.      │
+│                                 │
+│  ⚠️  Slight fade bias           │
+│     +180 rpm side spin suggests │
+│     a small open face at impact.│
+│                                 │
+│  [  Log Another Shot  ] [View All Shots]
+└─────────────────────────────────┘
+```
+
+---
+
+### Swing analysis
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Swing Analysis                 [Coming Soon]        │
+│  Upload a video and let the engine identify flaws.   │
+├─────────────────────────────────────────────────────┤
+│  🎥 Upload Your Swing Video                         │
+│  ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐  │
+│      💾                                             │
+│      Drag & drop your swing video here              │
+│      or click to browse                             │
+│      MP4, MOV, AVI up to 500 MB                     │
+│      [ Browse Files (disabled) ]                    │
+│  └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘  │
+│  [      Analyze Swing — Coming Soon (disabled)    ] │
+├─────────────────────────────────────────────────────┤
+│  What Will Be Analyzed                              │
+│                                                     │
+│  ┌──────────────┐ ┌──────────────┐                 │
+│  │   ⏱ Tempo   │ │  🧘 Hip &   │                 │
+│  │   & Rhythm  │ │   Body Rot.  │                 │
+│  │             │ │              │                 │
+│  │ ▓░░░░░░░░░ │ │ ▓░░░░░░░░░  │                 │
+│  │ — pending — │ │ — pending —  │                 │
+│  └──────────────┘ └──────────────┘                 │
+│  ┌──────────────┐ ┌──────────────┐                 │
+│  │ → Club Plane │ │ ✔ Follow-   │                 │
+│  │   & Path    │ │   Through   │                 │
+│  │             │ │              │                 │
+│  │ ▓░░░░░░░░░ │ │ ▓░░░░░░░░░  │                 │
+│  │ — pending — │ │ — pending —  │                 │
+│  └──────────────┘ └──────────────┘                 │
+│                                                     │
+│  🚧 This feature is under development.              │
+│     Use Add Shot to log launch monitor data now.    │
+└─────────────────────────────────────────────────────┘
+```
+
+---
+
 ### Build for production
 
 ```bash

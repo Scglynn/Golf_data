@@ -6,7 +6,63 @@
      been touched (either by tabbing past it or by submitting the form).
      ============================================================================= -->
 
-<div class="row justify-content-center mt-4">
+<!-- =========================================================================
+     Feedback panel – displayed after a successful shot submission.
+     The form is hidden while this panel is visible.
+     ========================================================================= -->
+<div *ngIf="showFeedback" class="row justify-content-center mt-4">
+  <div class="col-12 col-md-8 col-lg-6">
+    <div class="card shadow-sm">
+
+      <div class="card-header bg-success text-white d-flex align-items-center gap-2">
+        <span class="fs-5">&#10003;</span>
+        <h4 class="mb-0">Shot Saved!</h4>
+      </div>
+
+      <div class="card-body">
+        <!-- Shot summary line so the user can confirm which shot was just logged -->
+        <p *ngIf="savedShot" class="text-muted mb-3">
+          {{ savedShot.club }} &mdash;
+          {{ savedShot.carry_distance }} yds carry /
+          {{ savedShot.total_distance }} yds total
+        </p>
+
+        <h5 class="mb-3">Swing Feedback</h5>
+
+        <!-- Loop through feedback items; each maps type → Bootstrap alert colour -->
+        <div
+          *ngFor="let item of feedbackItems"
+          class="alert mb-2"
+          [ngClass]="'alert-' + item.type"
+          role="alert"
+        >
+          <strong>{{ item.message }}</strong>
+          <div class="mt-1 small">{{ item.tip }}</div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="d-flex gap-2 mt-4">
+          <button
+            type="button"
+            class="btn btn-primary flex-grow-1"
+            (click)="logAnother()"
+          >
+            Log Another Shot
+          </button>
+          <a routerLink="/" class="btn btn-outline-secondary">
+            View All Shots
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================================
+     Shot entry form – hidden while the feedback panel is displayed.
+     ========================================================================= -->
+<div *ngIf="!showFeedback" class="row justify-content-center mt-4">
   <div class="col-12 col-md-8 col-lg-6">
 
     <div class="card shadow-sm">
@@ -239,4 +295,4 @@
     </div>
 
   </div>
-</div>
+</div><!-- end *ngIf="!showFeedback" -->

@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Shot } from '../models/shot.model';
+import { Shot, FeedbackItem, ShotCreateResponse } from '../models/shot.model';
 
 @Injectable({
   // providedIn: 'root' means a single shared instance is created for the
@@ -47,12 +47,21 @@ export class ShotService {
 
   /**
    * Send a new shot to the API for insertion.
-   * `Partial<Shot>` is used because `id` and `created_at` are supplied by
-   * the database and must not be sent from the client.
+   * The server responds with both the saved shot record and swing feedback so
+   * the form can display analysis immediately without a second request.
    * @param shot - Object containing all user-supplied shot fields
    */
-  createShot(shot: Partial<Shot>): Observable<Shot> {
-    return this.http.post<Shot>(this.baseUrl, shot);
+  createShot(shot: Partial<Shot>): Observable<ShotCreateResponse> {
+    return this.http.post<ShotCreateResponse>(this.baseUrl, shot);
+  }
+
+  /**
+   * Fetch swing analysis feedback for an existing shot by id.
+   * Useful for reviewing analysis on previously logged shots.
+   * @param id - The shot's numeric database id
+   */
+  getFeedback(id: number): Observable<{ shot: Shot; feedback: FeedbackItem[] }> {
+    return this.http.get<{ shot: Shot; feedback: FeedbackItem[] }>(`${this.baseUrl}/${id}/feedback`);
   }
 
   /**

@@ -14,6 +14,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ShotFormComponent } from './components/shot-form/shot-form.component';
 import { ShotListComponent } from './components/shot-list/shot-list.component';
+import { SwingAnalysisComponent } from './components/swing-analysis/swing-analysis.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { ShotListComponent } from './components/shot-list/shot-list.component';
     AppComponent,
     ShotFormComponent,
     ShotListComponent,
+    SwingAnalysisComponent,
   ],
   imports: [
     // BrowserModule provides essential browser-specific services and directives

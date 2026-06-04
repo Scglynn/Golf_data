@@ -1,0 +1,139 @@
+<!-- =============================================================================
+     swing-analysis.component.html – Skeletal UI for future AI swing analysis
+     =============================================================================
+     This page is a design placeholder. The upload zone and analysis cards show
+     what the finished feature will look like; all interactive elements are
+     disabled until the back-end analysis pipeline is implemented.
+     ============================================================================= -->
+
+<div class="mt-4">
+
+  <!-- Page header -->
+  <div class="d-flex align-items-center mb-1">
+    <h2 class="mb-0">Swing Analysis</h2>
+    <span class="badge bg-warning text-dark ms-3">Coming Soon</span>
+  </div>
+  <p class="text-muted mb-4">
+    Upload a video of your swing and let our analysis engine identify mechanical
+    flaws and suggest improvements.
+  </p>
+
+  <!-- ── Upload zone ──────────────────────────────────────────────────────── -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+      <h5 class="mb-0">&#127909; Upload Your Swing Video</h5>
+    </div>
+    <div class="card-body">
+
+      <!-- Dashed drop-zone (non-functional placeholder) -->
+      <div class="upload-zone d-flex flex-column align-items-center justify-content-center p-5 mb-3">
+        <div class="upload-icon mb-3">&#128190;</div>
+        <p class="text-muted mb-1 fw-semibold">Drag &amp; drop your swing video here</p>
+        <p class="text-muted small mb-3">or click to browse — MP4, MOV, AVI up to 500 MB</p>
+        <!-- Hidden file input; button below triggers it when feature is live -->
+        <input type="file" id="swingVideoInput" accept="video/*" class="d-none" disabled />
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm"
+          disabled
+          title="Upload will be enabled in a future release"
+        >
+          Browse Files
+        </button>
+      </div>
+
+      <!-- Analyse button -->
+      <div class="d-grid">
+        <button
+          type="button"
+          class="btn btn-success btn-lg"
+          disabled
+          title="Coming Soon — analysis engine is under development"
+        >
+          Analyze Swing &mdash; Coming Soon
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Planned analysis output ──────────────────────────────────────────── -->
+  <h5 class="mb-3 text-muted">What Will Be Analyzed</h5>
+
+  <div class="row g-3 mb-4">
+
+    <!-- Card 1: Tempo & Rhythm -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card analysis-card h-100 shadow-sm">
+        <div class="card-body text-center">
+          <div class="analysis-icon mb-2">&#9201;</div>
+          <h6 class="card-title">Tempo &amp; Rhythm</h6>
+          <p class="card-text text-muted small">Backswing-to-downswing ratio and overall timing consistency.</p>
+          <div class="progress mt-3" style="height: 8px;" title="Placeholder">
+            <div class="progress-bar bg-secondary" style="width: 0%"></div>
+          </div>
+          <small class="text-muted">— pending analysis —</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Hip & Body Rotation -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card analysis-card h-100 shadow-sm">
+        <div class="card-body text-center">
+          <div class="analysis-icon mb-2">&#129485;</div>
+          <h6 class="card-title">Hip &amp; Body Rotation</h6>
+          <p class="card-text text-muted small">Hip clearance, X-factor stretch, and upper/lower body separation.</p>
+          <div class="progress mt-3" style="height: 8px;" title="Placeholder">
+            <div class="progress-bar bg-secondary" style="width: 0%"></div>
+          </div>
+          <small class="text-muted">— pending analysis —</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Club Plane & Path -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card analysis-card h-100 shadow-sm">
+        <div class="card-body text-center">
+          <div class="analysis-icon mb-2">&#10145;</div>
+          <h6 class="card-title">Club Plane &amp; Path</h6>
+          <p class="card-text text-muted small">Swing plane consistency on backswing and downswing slot.</p>
+          <div class="progress mt-3" style="height: 8px;" title="Placeholder">
+            <div class="progress-bar bg-secondary" style="width: 0%"></div>
+          </div>
+          <small class="text-muted">— pending analysis —</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Follow-Through -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card analysis-card h-100 shadow-sm">
+        <div class="card-body text-center">
+          <div class="analysis-icon mb-2">&#10004;</div>
+          <h6 class="card-title">Follow-Through</h6>
+          <p class="card-text text-muted small">Finish position balance, arm extension, and weight transfer.</p>
+          <div class="progress mt-3" style="height: 8px;" title="Placeholder">
+            <div class="progress-bar bg-secondary" style="width: 0%"></div>
+          </div>
+          <small class="text-muted">— pending analysis —</small>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Development notice -->
+  <div class="alert alert-info d-flex align-items-start gap-2" role="alert">
+    <span class="fs-5">&#128679;</span>
+    <div>
+      <strong>This feature is under development.</strong>
+      Video upload and AI-powered swing analysis will be enabled in a future
+      release. In the meantime, use the
+      <a routerLink="/add" class="alert-link">Add Shot</a> form to log your
+      launch monitor data and receive immediate feedback on your swing metrics.
+    </div>
+  </div>
+
+</div>

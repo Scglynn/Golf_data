@@ -10,6 +10,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { ShotListComponent } from './components/shot-list/shot-list.component';
 import { ShotFormComponent } from './components/shot-form/shot-form.component';
+import { SwingAnalysisComponent } from './components/swing-analysis/swing-analysis.component';
 
 const routes: Routes = [
   // Default view – shows the full list of recorded shots
@@ -21,6 +22,9 @@ const routes: Routes = [
   // Form for editing an existing shot; :id is read by ShotFormComponent via
   // ActivatedRoute to fetch the current values and pre-populate the form.
   { path: 'edit/:id', component: ShotFormComponent },
+
+  // Skeletal page for the upcoming AI-powered swing video analysis feature
+  { path: 'swing-analysis', component: SwingAnalysisComponent },
 
   // Catch-all: redirect any unknown URL back to the shot list
   { path: '**', redirectTo: '' },

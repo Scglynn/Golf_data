@@ -7,6 +7,30 @@
  * for type-safe bindings.
  */
 
+/**
+ * A single feedback item returned by the server's swing analysis engine.
+ * type     – severity: 'warning' triggers an amber alert, 'info' a blue one,
+ *             'success' a green one.
+ * category – groups related items: 'spin', 'path', 'trajectory', 'distance', 'general'.
+ * message  – the headline finding shown in bold.
+ * tip      – an actionable suggestion shown below the message.
+ */
+export interface FeedbackItem {
+  type: 'warning' | 'info' | 'success';
+  category: string;
+  message: string;
+  tip: string;
+}
+
+/**
+ * The response shape returned by POST /api/shots.
+ * Including feedback in the creation response avoids a second round-trip.
+ */
+export interface ShotCreateResponse {
+  shot: Shot;
+  feedback: FeedbackItem[];
+}
+
 export interface Shot {
   /** Auto-generated surrogate primary key from the database. */
   id: number;
