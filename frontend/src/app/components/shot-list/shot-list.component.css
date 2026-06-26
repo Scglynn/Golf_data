@@ -26,7 +26,7 @@ tbody tr {
 
 /* On hover, make the row highlight more prominent than Bootstrap's default */
 .table-hover > tbody > tr:hover > td {
-  background-color: #e8f5e9; /* light green hint matches the golf theme */
+  background-color: var(--table-hover-bg); /* light green hint matches the golf theme */
 }
 
 /* Make the action buttons sit comfortably in their cell */

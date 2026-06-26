@@ -21,6 +21,7 @@ const CLUB_CONFIG = {
   'Driver':         { launchMin: 10, launchMax: 15, spinMin:  2000, spinMax:  2800 },
   '3-Wood':         { launchMin:  8, launchMax: 12, spinMin:  3000, spinMax:  4000 },
   '5-Wood':         { launchMin: 10, launchMax: 14, spinMin:  3500, spinMax:  4500 },
+  '7-Wood':         { launchMin: 10, launchMax: 14, spinMin:  3500, spinMax:  5000 },
   '2-Iron':         { launchMin: 10, launchMax: 14, spinMin:  3500, spinMax:  5500 },
   '3-Iron':         { launchMin: 11, launchMax: 15, spinMin:  4000, spinMax:  6000 },
   '4-Iron':         { launchMin: 12, launchMax: 16, spinMin:  4500, spinMax:  6500 },

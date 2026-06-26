@@ -50,6 +50,7 @@ export class ShotFormComponent implements OnInit {
     'Driver',
     '3-Wood',
     '5-Wood',
+    '7-Wood',
     '2-Iron',
     '3-Iron',
     '4-Iron',

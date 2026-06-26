@@ -27,6 +27,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
+
     <!-- Nav links collapse on mobile -->
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
@@ -60,6 +61,12 @@
           </a>
         </li>
       </ul>
+      <button
+      class="boxed-button btn-sm ms-auto me-2"
+      (click)="toggleTheme()"
+    >
+    {{ isDark ? '☀️' : '🌙' }}
+    </button>
     </div>
 
   </div>

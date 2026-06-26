@@ -1,8 +1,8 @@
 /* Dashed upload drop-zone */
 .upload-zone {
-  border: 2px dashed #ced4da;
+  border: 2px dashed var(--upload-zone-border);
   border-radius: 0.5rem;
-  background-color: #f8f9fa;
+  background-color: var(--upload-zone-bg);
   min-height: 180px;
   transition: border-color 0.2s;
 }
