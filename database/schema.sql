@@ -80,7 +80,7 @@ CREATE INDEX idx_shots_created_at ON shots (created_at DESC);
 -- ---------------------------------------------------------------------------
 COMMENT ON TABLE  shots                    IS 'Each row is one recorded golf shot with launch monitor data.';
 COMMENT ON COLUMN shots.id                 IS 'Auto-incrementing surrogate primary key.';
-COMMENT ON COLUMN shots.club               IS 'Club used: Driver, 3-Wood, 5-Wood, 2-9 Iron, PW, GW, SW, LW, Putter.';
+COMMENT ON COLUMN shots.club               IS 'Club used: Driver, 3-Wood, 5-Wood, 7-Wood, 2-9 Iron, PW, GW, SW, LW, Putter.';
 COMMENT ON COLUMN shots.ball_speed         IS 'Ball speed at impact in mph.';
 COMMENT ON COLUMN shots.launch_angle       IS 'Vertical launch angle in degrees above horizon.';
 COMMENT ON COLUMN shots.back_spin          IS 'Back-spin at launch in rpm (negative = top-spin).';

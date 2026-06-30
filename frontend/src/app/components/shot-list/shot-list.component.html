@@ -53,7 +53,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let shot of shots">
+          <tr *ngFor="let shot of shots" class="clickable-row" (click)="viewShot(shot.id)" title="View shot details">
             <!-- Club name -->
             <td class="fw-semibold">{{ shot.club }}</td>
 
@@ -87,7 +87,7 @@
               <button
                 type="button"
                 class="btn btn-sm btn-outline-primary me-1"
-                (click)="editShot(shot.id)"
+                (click)="$event.stopPropagation(); editShot(shot.id)"
                 title="Edit shot"
               >
                 Edit
@@ -95,7 +95,7 @@
               <button
                 type="button"
                 class="btn btn-sm btn-outline-danger"
-                (click)="deleteShot(shot.id)"
+                (click)="$event.stopPropagation(); deleteShot(shot.id)"
                 title="Delete shot"
               >
                 Delete

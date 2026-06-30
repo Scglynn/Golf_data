@@ -77,6 +77,10 @@ export class ShotListComponent implements OnInit {
    * pre-navigation logic (e.g. confirming unsaved changes) in the future.
    * @param id - The shot's primary key
    */
+  viewShot(id: number): void {
+    void this.router.navigate(['/shots', id]);
+  }
+
   editShot(id: number): void {
     void this.router.navigate(['/edit', id]);
   }

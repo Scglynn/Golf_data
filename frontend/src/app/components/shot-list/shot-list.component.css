@@ -34,3 +34,8 @@ td .btn-sm {
   padding: 0.2rem 0.55rem;
   font-size: 0.8rem;
 }
+
+/* Rows are clickable — show a pointer to signal interactivity */
+tr.clickable-row {
+  cursor: pointer;
+}

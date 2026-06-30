@@ -14,6 +14,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ShotFormComponent } from './components/shot-form/shot-form.component';
 import { ShotListComponent } from './components/shot-list/shot-list.component';
+import { ShotDetailComponent } from './components/shot-detail/shot-detail.component';
 import { SwingAnalysisComponent } from './components/swing-analysis/swing-analysis.component';
 
 @NgModule({
@@ -22,6 +23,7 @@ import { SwingAnalysisComponent } from './components/swing-analysis/swing-analys
     AppComponent,
     ShotFormComponent,
     ShotListComponent,
+    ShotDetailComponent,
     SwingAnalysisComponent,
   ],
   imports: [

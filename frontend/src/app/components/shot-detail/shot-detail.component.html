@@ -1,0 +1,142 @@
+<div class="mt-4">
+
+  <!-- Header row -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Shot Detail</h2>
+    <div>
+      <button type="button" class="btn btn-outline-secondary me-2" (click)="goBack()">
+        ← Back to Shots
+      </button>
+      <button type="button" class="btn btn-outline-primary" (click)="editShot()">
+        Edit Shot
+      </button>
+    </div>
+  </div>
+
+  <!-- Error alert -->
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible" role="alert">
+    {{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+  </div>
+
+  <!-- Loading spinner -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-success" role="status">
+      <span class="visually-hidden">Loading…</span>
+    </div>
+  </div>
+
+  <!-- Detail content -->
+  <div *ngIf="!isLoading && shot">
+
+    <!-- Shot metrics card -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">{{ shot.club }} &mdash; {{ shot.created_at | date:'MMMM d, y, h:mm a' }}</h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-6 col-md-3">
+            <div class="stat-card p-3 rounded border text-center">
+              <div class="stat-label text-muted small">Ball Speed</div>
+              <div class="stat-value fs-4 fw-semibold">{{ shot.ball_speed | number:'1.1-1' }}</div>
+              <div class="text-muted small">mph</div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stat-card p-3 rounded border text-center">
+              <div class="stat-label text-muted small">Launch Angle</div>
+              <div class="stat-value fs-4 fw-semibold">{{ shot.launch_angle | number:'1.1-1' }}</div>
+              <div class="text-muted small">degrees</div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stat-card p-3 rounded border text-center">
+              <div class="stat-label text-muted small">Back Spin</div>
+              <div class="stat-value fs-4 fw-semibold">{{ shot.back_spin | number:'1.0-0' }}</div>
+              <div class="text-muted small">rpm</div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stat-card p-3 rounded border text-center">
+              <div class="stat-label text-muted small">Side Spin</div>
+              <div class="stat-value fs-4 fw-semibold"
+                   [class.text-danger]="shot.side_spin > 0"
+                   [class.text-primary]="shot.side_spin < 0">
+                {{ shot.side_spin | number:'1.0-0' }}
+              </div>
+              <div class="text-muted small">
+                rpm
+                <span *ngIf="shot.side_spin > 0" class="text-danger">(fade)</span>
+                <span *ngIf="shot.side_spin < 0" class="text-primary">(draw)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stat-card p-3 rounded border text-center">
+              <div class="stat-label text-muted small">Club Path</div>
+              <div class="stat-value fs-4 fw-semibold"
+                   [class.text-primary]="shot.club_path > 0"
+                   [class.text-danger]="shot.club_path < 0">
+                {{ shot.club_path | number:'1.1-1' }}
+              </div>
+              <div class="text-muted small">
+                degrees
+                <span *ngIf="shot.club_path > 0" class="text-primary">(in-out)</span>
+                <span *ngIf="shot.club_path < 0" class="text-danger">(out-in)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stat-card p-3 rounded border text-center">
+              <div class="stat-label text-muted small">Carry Distance</div>
+              <div class="stat-value fs-4 fw-semibold">{{ shot.carry_distance | number:'1.1-1' }}</div>
+              <div class="text-muted small">yards</div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="stat-card p-3 rounded border text-center">
+              <div class="stat-label text-muted small">Total Distance</div>
+              <div class="stat-value fs-4 fw-semibold">{{ shot.total_distance | number:'1.1-1' }}</div>
+              <div class="text-muted small">yards</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Swing analysis feedback -->
+    <div class="card shadow-sm">
+      <div class="card-header">
+        <h5 class="mb-0">Swing Analysis</h5>
+      </div>
+      <div class="card-body">
+
+        <div *ngIf="feedbackItems.length === 0" class="text-muted">
+          No feedback available for this shot.
+        </div>
+
+        <div *ngFor="let item of feedbackItems"
+             class="alert"
+             [class.alert-warning]="item.type === 'warning'"
+             [class.alert-info]="item.type === 'info'"
+             [class.alert-success]="item.type === 'success'"
+             role="alert">
+          <strong>{{ item.message }}</strong>
+          <div class="mt-1">{{ item.tip }}</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
