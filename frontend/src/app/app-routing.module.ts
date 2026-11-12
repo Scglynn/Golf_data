@@ -12,6 +12,8 @@ import { ShotListComponent } from './components/shot-list/shot-list.component';
 import { ShotFormComponent } from './components/shot-form/shot-form.component';
 import { ShotDetailComponent } from './components/shot-detail/shot-detail.component';
 import { SwingAnalysisComponent } from './components/swing-analysis/swing-analysis.component';
+import { MyBagComponent } from './components/my-bag/my-bag.component';
+import { ShaftCompareComponent } from './components/shaft-compare/shaft-compare.component';
 
 const routes: Routes = [
   // Default view – shows the full list of recorded shots
@@ -29,6 +31,12 @@ const routes: Routes = [
 
   // Skeletal page for the upcoming AI-powered swing video analysis feature
   { path: 'swing-analysis', component: SwingAnalysisComponent },
+
+  // Club + shaft setups the golfer wants to track and test
+  { path: 'bag', component: MyBagComponent },
+
+  // Side-by-side shot stats and shaft-fit feedback for one or two setups
+  { path: 'shaft-compare', component: ShaftCompareComponent },
 
   // Catch-all: redirect any unknown URL back to the shot list
   { path: '**', redirectTo: '' },

@@ -96,6 +96,56 @@
           </div>
 
           <!-- ----------------------------------------------------------------
+               Club setup (shaft) – optional, filtered by the selected club
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="club_config_id" class="form-label fw-semibold">
+              Shaft / Setup <span class="badge text-bg-secondary fw-normal">optional</span>
+            </label>
+            <select
+              id="club_config_id"
+              formControlName="club_config_id"
+              class="form-select"
+            >
+              <option [ngValue]="null">None</option>
+              <option *ngFor="let c of configsForClub" [ngValue]="c.id">
+                {{ c.label }} ({{ c.shaft_flex }}<ng-container *ngIf="c.shaft_weight_g">, {{ c.shaft_weight_g }} g</ng-container>)
+              </option>
+            </select>
+            <div class="form-text">
+              <ng-container *ngIf="configsForClub.length === 0">
+                No setups for this club yet.
+              </ng-container>
+              <a routerLink="/bag">Manage your bag</a> to add shafts you want to test.
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
+               Club Speed (mph) – optional
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="club_speed" class="form-label fw-semibold">
+              Club Speed
+              <span class="text-muted fw-normal">(mph)</span> <span class="badge text-bg-secondary fw-normal">optional</span>
+            </label>
+            <input
+              type="number"
+              id="club_speed"
+              formControlName="club_speed"
+              class="form-control"
+              [class.is-invalid]="getControl('club_speed').invalid && getControl('club_speed').touched"
+              placeholder="e.g. 105"
+              step="0.1"
+            />
+            <div class="invalid-feedback">
+              <ng-container *ngIf="getControl('club_speed').errors as errs">
+                <span *ngIf="errs['min']">Must be more than 0 mph.</span>
+                <span *ngIf="errs['max']">Must be 200 mph or less.</span>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
                Ball Speed (mph)
                ---------------------------------------------------------------- -->
           <div class="mb-3">
@@ -118,6 +168,12 @@
                 <span *ngIf="errs['max']">Must be 250 mph or less.</span>
               </ng-container>
             </div>
+          </div>
+
+          <!-- Live smash factor once both speeds are entered -->
+          <div *ngIf="smashFactor !== null" class="alert alert-light border py-2 mb-3 small">
+            Smash factor: <strong>{{ smashFactor | number:'1.2-2' }}</strong>
+            <span class="text-muted">(ball speed ÷ club speed)</span>
           </div>
 
           <!-- ----------------------------------------------------------------
@@ -175,7 +231,7 @@
                ---------------------------------------------------------------- -->
           <div class="mb-3">
             <label for="side_spin" class="form-label fw-semibold">
-              Side Spin
+              Side Spin/Spin Axis
               <span class="text-muted fw-normal">(rpm · negative = draw, positive = fade)</span>
             </label>
             <input
@@ -216,6 +272,31 @@
             <div class="invalid-feedback">
               <ng-container *ngIf="getControl('club_path').errors as errs">
                 <span *ngIf="errs['required']">Club path is required.</span>
+                <span *ngIf="errs['min']">Minimum is -20°.</span>
+                <span *ngIf="errs['max']">Maximum is 20°.</span>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
+               Face Angle (degrees) – optional
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="face_angle" class="form-label fw-semibold">
+              Face Angle
+              <span class="text-muted fw-normal">(degrees · positive = open, negative = closed)</span> <span class="badge text-bg-secondary fw-normal">optional</span>
+            </label>
+            <input
+              type="number"
+              id="face_angle"
+              formControlName="face_angle"
+              class="form-control"
+              [class.is-invalid]="getControl('face_angle').invalid && getControl('face_angle').touched"
+              placeholder="e.g. 1.5"
+              step="0.1"
+            />
+            <div class="invalid-feedback">
+              <ng-container *ngIf="getControl('face_angle').errors as errs">
                 <span *ngIf="errs['min']">Minimum is -20°.</span>
                 <span *ngIf="errs['max']">Maximum is 20°.</span>
               </ng-container>
@@ -268,6 +349,31 @@
                 <span *ngIf="errs['required']">Total distance is required.</span>
                 <span *ngIf="errs['min']">Must be 0 or more yards.</span>
                 <span *ngIf="errs['max']">Must be 600 yards or less.</span>
+              </ng-container>
+            </div>
+          </div>
+
+          <!-- ----------------------------------------------------------------
+               Offline Distance (yards) – optional
+               ---------------------------------------------------------------- -->
+          <div class="mb-3">
+            <label for="offline_distance" class="form-label fw-semibold">
+              Offline
+              <span class="text-muted fw-normal">(yards · negative = left, positive = right)</span> <span class="badge text-bg-secondary fw-normal">optional</span>
+            </label>
+            <input
+              type="number"
+              id="offline_distance"
+              formControlName="offline_distance"
+              class="form-control"
+              [class.is-invalid]="getControl('offline_distance').invalid && getControl('offline_distance').touched"
+              placeholder="e.g. -8"
+              step="0.1"
+            />
+            <div class="invalid-feedback">
+              <ng-container *ngIf="getControl('offline_distance').errors as errs">
+                <span *ngIf="errs['min']">Minimum is -150 yards.</span>
+                <span *ngIf="errs['max']">Maximum is 150 yards.</span>
               </ng-container>
             </div>
           </div>

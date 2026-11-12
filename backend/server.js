@@ -18,6 +18,9 @@ const cors    = require('cors');
 // Import the shots router. All /api/shots/* endpoints are defined there.
 const shotsRouter = require('./routes/shots');
 
+// Club + shaft setups and shaft-fit stats live under /api/club-configs.
+const clubConfigsRouter = require('./routes/clubConfigs');
+
 // ---------------------------------------------------------------------------
 // App setup
 // ---------------------------------------------------------------------------
@@ -37,6 +40,7 @@ app.use(cors());
 // Mount the shots router. Every route defined inside routes/shots.js will be
 // prefixed with /api/shots automatically.
 app.use('/api/shots', shotsRouter);
+app.use('/api/club-configs', clubConfigsRouter);
 
 // Simple health-check endpoint – useful for Docker health checks and uptime monitors.
 app.get('/health', (_req, res) => {

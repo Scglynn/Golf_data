@@ -1,0 +1,5 @@
+/* Highlights the better value of two setups in the comparison table. */
+.better-value {
+  font-weight: 600;
+  color: var(--bs-success);
+}

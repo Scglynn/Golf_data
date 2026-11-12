@@ -7,7 +7,7 @@
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -16,6 +16,8 @@ import { ShotFormComponent } from './components/shot-form/shot-form.component';
 import { ShotListComponent } from './components/shot-list/shot-list.component';
 import { ShotDetailComponent } from './components/shot-detail/shot-detail.component';
 import { SwingAnalysisComponent } from './components/swing-analysis/swing-analysis.component';
+import { MyBagComponent } from './components/my-bag/my-bag.component';
+import { ShaftCompareComponent } from './components/shaft-compare/shaft-compare.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { SwingAnalysisComponent } from './components/swing-analysis/swing-analys
     ShotListComponent,
     ShotDetailComponent,
     SwingAnalysisComponent,
+    MyBagComponent,
+    ShaftCompareComponent,
   ],
   imports: [
     // BrowserModule provides essential browser-specific services and directives
@@ -34,6 +38,9 @@ import { SwingAnalysisComponent } from './components/swing-analysis/swing-analys
     // ReactiveFormsModule provides FormBuilder, FormGroup, FormControl and the
     // [formGroup] / formControlName directives used by ShotFormComponent.
     ReactiveFormsModule,
+
+    // FormsModule provides ngModel, used by the setup pickers on ShaftCompareComponent.
+    FormsModule,
 
     // HttpClientModule registers the Angular HTTP client and its interceptor chain.
     // Required for ShotService to make HTTP requests.

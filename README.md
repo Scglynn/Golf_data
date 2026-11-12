@@ -68,6 +68,13 @@ createdb -U postgres golf_tracker
 psql -U postgres -d golf_tracker -f database/schema.sql
 ```
 
+Already have a database with shots in it? `schema.sql` drops the tables, so run the
+migration instead – it only adds the new table and columns and is safe to re-run:
+
+```bash
+psql -U postgres -d golf_tracker -f database/migrations/001_shaft_fit.sql
+```
+
 ---
 
 ## Backend setup
@@ -99,6 +106,11 @@ The API will be available at `http://localhost:3000`.
 | POST | `/api/shots` | Create a new shot |
 | PUT | `/api/shots/:id` | Update an existing shot |
 | DELETE | `/api/shots/:id` | Delete a shot |
+| GET | `/api/club-configs` | List club + shaft setups |
+| POST | `/api/club-configs` | Add a setup |
+| PUT | `/api/club-configs/:id` | Update a setup |
+| DELETE | `/api/club-configs/:id` | Delete a setup (its shots are kept) |
+| GET | `/api/club-configs/stats?ids=1,2` | Averages, spread and shaft-fit feedback per setup |
 | GET | `/health` | Health check |
 
 ---
@@ -252,14 +264,37 @@ npm run build
 | Field | Type | Units | Notes |
 |-------|------|-------|-------|
 | `club` | string | – | Dropdown selection |
+| `club_config_id` | number | – | Optional – the club + shaft setup used |
+| `club_speed` | number | mph | Optional, 0–200 – enables smash factor |
 | `ball_speed` | number | mph | 0–250 |
 | `launch_angle` | number | degrees | -10–60 |
 | `back_spin` | number | rpm | -10,000–10,000 |
 | `side_spin` | number | rpm | -5,000–5,000 (negative = draw) |
 | `club_path` | number | degrees | -20–20 (negative = out-to-in) |
+| `face_angle` | number | degrees | Optional, -20–20 (negative = closed) |
 | `carry_distance` | number | yards | 0–500 |
 | `total_distance` | number | yards | 0–600 |
+| `offline_distance` | number | yards | Optional, -150–150 (negative = left) |
 | `created_at` | timestamp | – | Set automatically by the database |
+
+---
+
+## Testing your shafts
+
+1. **My Bag** – add each club + shaft you want to test (flex, weight, kick point, torque).
+2. **Add Shot** – pick the setup you used and enter club speed and offline distance
+   along with the usual numbers.
+3. Hit at least **10 shots per setup** at the same effort.
+4. **Shaft Compare** – pick two setups for the same club. The table highlights the
+   better value per row, and each setup gets shaft-fit feedback:
+   - flex and weight vs your average club speed
+   - ball-flight pattern (high launch + spin + misses left → possibly too soft;
+     low launch + spin + misses right → possibly too stiff), judged only when your
+     average smash factor shows solid contact
+   - carry and left-right spread
+
+The better fit is usually the setup with equal or longer carry and a tighter spread.
+Flex/weight bands are rough guides; tempo matters too and isn't measured.
 
 ---
 

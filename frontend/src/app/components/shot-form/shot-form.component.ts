@@ -16,7 +16,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ShotService } from '../../services/shot.service';
-import { Shot, FeedbackItem, ShotCreateResponse } from '../../models/shot.model';
+import { ClubConfigService } from '../../services/club-config.service';
+import { Shot, FeedbackItem, ShotCreateResponse, ClubConfig } from '../../models/shot.model';
+import { CLUBS } from '../../models/clubs';
 
 @Component({
   selector: 'app-shot-form',
@@ -42,29 +44,11 @@ export class ShotFormComponent implements OnInit {
   /** The shot record that was just saved, displayed in the feedback panel header */
   savedShot: Shot | null = null;
 
-  /**
-   * Complete list of valid club names shown in the dropdown.
-   * Order matches the typical bag layout from longest to shortest.
-   */
-  readonly clubs: string[] = [
-    'Driver',
-    '3-Wood',
-    '5-Wood',
-    '7-Wood',
-    '2-Iron',
-    '3-Iron',
-    '4-Iron',
-    '5-Iron',
-    '6-Iron',
-    '7-Iron',
-    '8-Iron',
-    '9-Iron',
-    'Pitching Wedge',
-    'Gap Wedge',
-    'Sand Wedge',
-    'Lob Wedge',
-    'Putter',
-  ];
+  /** Complete list of valid club names shown in the dropdown. */
+  readonly clubs = CLUBS;
+
+  /** Every club + shaft setup in the bag; filtered by club in the template. */
+  clubConfigs: ClubConfig[] = [];
 
   // -------------------------------------------------------------------------
   // Private state
@@ -79,6 +63,7 @@ export class ShotFormComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly shotService: ShotService,
+    private readonly clubConfigService: ClubConfigService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
   ) {}
@@ -89,6 +74,8 @@ export class ShotFormComponent implements OnInit {
   ngOnInit(): void {
     this.buildForm();
     this.detectEditMode();
+    this.loadClubConfigs();
+    this.clearConfigOnClubChange();
   }
 
   // -------------------------------------------------------------------------
@@ -105,6 +92,13 @@ export class ShotFormComponent implements OnInit {
       club: [
         '',
         [Validators.required],
+      ],
+      // Optional: only the setup dropdown filters on it.
+      club_config_id: [null],
+      // Optional: not every launch monitor reports club speed.
+      club_speed: [
+        null,
+        [Validators.min(1), Validators.max(200)],
       ],
       ball_speed: [
         null,
@@ -133,6 +127,15 @@ export class ShotFormComponent implements OnInit {
       total_distance: [
         null,
         [Validators.required, Validators.min(0), Validators.max(600)],
+      ],
+      // Optional: face angle and offline distance improve the analysis.
+      face_angle: [
+        null,
+        [Validators.min(-20), Validators.max(20)],
+      ],
+      offline_distance: [
+        null,
+        [Validators.min(-150), Validators.max(150)],
       ],
     });
   }
@@ -178,6 +181,10 @@ export class ShotFormComponent implements OnInit {
           club_path:      shot.club_path,
           carry_distance: shot.carry_distance,
           total_distance: shot.total_distance,
+          club_speed:       shot.club_speed,
+          face_angle:       shot.face_angle,
+          offline_distance: shot.offline_distance,
+          club_config_id:   shot.club_config_id,
         });
       },
       error: (err: unknown) => {
@@ -186,6 +193,48 @@ export class ShotFormComponent implements OnInit {
         void this.router.navigate(['/']);
       },
     });
+  }
+
+  // -------------------------------------------------------------------------
+  // Club setups
+  // -------------------------------------------------------------------------
+
+  /** Fetch the bag so the setup dropdown can be populated. */
+  private loadClubConfigs(): void {
+    this.clubConfigService.getAll().subscribe({
+      next: (configs: ClubConfig[]) => (this.clubConfigs = configs),
+      error: (err: unknown) => console.error('Failed to load club setups:', err),
+    });
+  }
+
+  /**
+   * A setup belongs to one club, so clear the selected setup when the user
+   * switches to a different club.
+   */
+  private clearConfigOnClubChange(): void {
+    this.getControl('club').valueChanges.subscribe((club: string) => {
+      const configId = this.getControl('club_config_id').value as number | null;
+      const selected = this.clubConfigs.find((c) => c.id === Number(configId));
+      if (selected && selected.club !== club) {
+        this.getControl('club_config_id').setValue(null);
+      }
+    });
+  }
+
+  /** Setups for the currently selected club. */
+  get configsForClub(): ClubConfig[] {
+    const club = this.getControl('club').value as string;
+    return this.clubConfigs.filter((c) => c.club === club);
+  }
+
+  /**
+   * Smash factor (ball speed ÷ club speed) shown live under the speed inputs,
+   * or null until both speeds are entered.
+   */
+  get smashFactor(): number | null {
+    const ball = Number(this.getControl('ball_speed').value);
+    const club = Number(this.getControl('club_speed').value);
+    return ball > 0 && club > 0 ? ball / club : null;
   }
 
   // -------------------------------------------------------------------------

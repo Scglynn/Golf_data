@@ -33,15 +33,32 @@
     <div class="card shadow-sm mb-4">
       <div class="card-header">
         <h5 class="mb-0">{{ shot.club }} &mdash; {{ shot.created_at | date:'MMMM d, y, h:mm a' }}</h5>
+        <div *ngIf="setupLabel" class="text-muted small mt-1">Setup: {{ setupLabel }}</div>
       </div>
       <div class="card-body">
         <div class="row g-3">
+
+          <div *ngIf="shot.club_speed !== null" class="col-6 col-md-3">
+            <div class="stat-card p-3 rounded border text-center">
+              <div class="stat-label text-muted small">Club Speed</div>
+              <div class="stat-value fs-4 fw-semibold">{{ shot.club_speed | number:'1.1-1' }}</div>
+              <div class="text-muted small">mph</div>
+            </div>
+          </div>
 
           <div class="col-6 col-md-3">
             <div class="stat-card p-3 rounded border text-center">
               <div class="stat-label text-muted small">Ball Speed</div>
               <div class="stat-value fs-4 fw-semibold">{{ shot.ball_speed | number:'1.1-1' }}</div>
               <div class="text-muted small">mph</div>
+            </div>
+          </div>
+
+          <div *ngIf="smashFactor !== null" class="col-6 col-md-3">
+            <div class="stat-card p-3 rounded border text-center">
+              <div class="stat-label text-muted small">Smash Factor</div>
+              <div class="stat-value fs-4 fw-semibold">{{ smashFactor | number:'1.2-2' }}</div>
+              <div class="text-muted small">ball ÷ club speed</div>
             </div>
           </div>
 
@@ -63,7 +80,7 @@
 
           <div class="col-6 col-md-3">
             <div class="stat-card p-3 rounded border text-center">
-              <div class="stat-label text-muted small">Side Spin</div>
+              <div class="stat-label text-muted small">Side Spin/Spin Axis</div>
               <div class="stat-value fs-4 fw-semibold"
                    [class.text-danger]="shot.side_spin > 0"
                    [class.text-primary]="shot.side_spin < 0">
@@ -93,6 +110,18 @@
             </div>
           </div>
 
+          <div *ngIf="shot.face_angle !== null" class="col-6 col-md-3">
+            <div class="stat-card p-3 rounded border text-center">
+              <div class="stat-label text-muted small">Face Angle</div>
+              <div class="stat-value fs-4 fw-semibold">{{ shot.face_angle | number:'1.1-1' }}</div>
+              <div class="text-muted small">
+                degrees
+                <span *ngIf="shot.face_angle > 0">(open)</span>
+                <span *ngIf="shot.face_angle < 0">(closed)</span>
+              </div>
+            </div>
+          </div>
+
           <div class="col-6 col-md-3">
             <div class="stat-card p-3 rounded border text-center">
               <div class="stat-label text-muted small">Carry Distance</div>
@@ -106,6 +135,18 @@
               <div class="stat-label text-muted small">Total Distance</div>
               <div class="stat-value fs-4 fw-semibold">{{ shot.total_distance | number:'1.1-1' }}</div>
               <div class="text-muted small">yards</div>
+            </div>
+          </div>
+
+          <div *ngIf="shot.offline_distance !== null" class="col-6 col-md-3">
+            <div class="stat-card p-3 rounded border text-center">
+              <div class="stat-label text-muted small">Offline</div>
+              <div class="stat-value fs-4 fw-semibold">{{ shot.offline_distance | number:'1.1-1' }}</div>
+              <div class="text-muted small">
+                yards
+                <span *ngIf="shot.offline_distance < 0">(left)</span>
+                <span *ngIf="shot.offline_distance > 0">(right)</span>
+              </div>
             </div>
           </div>
 

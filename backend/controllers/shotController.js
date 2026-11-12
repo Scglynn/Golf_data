@@ -26,6 +26,9 @@ const { analyzeShot } = require('../services/analysisService');
 function normaliseRow(row) {
   return {
     ...row,
+    club_speed:       toNumberOrNull(row.club_speed),
+    face_angle:       toNumberOrNull(row.face_angle),
+    offline_distance: toNumberOrNull(row.offline_distance),
     ball_speed:     parseFloat(row.ball_speed),
     launch_angle:   parseFloat(row.launch_angle),
     back_spin:      parseFloat(row.back_spin),
@@ -33,6 +36,36 @@ function normaliseRow(row) {
     club_path:      parseFloat(row.club_path),
     carry_distance: parseFloat(row.carry_distance),
     total_distance: parseFloat(row.total_distance),
+  };
+}
+
+/**
+ * Parse an optional NUMERIC value. NULL stays null instead of becoming NaN.
+ * @param {string|number|null|undefined} value
+ * @returns {number|null}
+ */
+function toNumberOrNull(value) {
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+  const parsed = parseFloat(value);
+  return isNaN(parsed) ? null : parsed;
+}
+
+/**
+ * Read the optional shaft-fit fields from a request body, converting missing
+ * or blank values to null so they can be passed straight to a query.
+ * @param {Object} body - req.body
+ * @returns {{ club_speed: number|null, face_angle: number|null,
+ *             offline_distance: number|null, club_config_id: number|null }}
+ */
+function optionalFields(body) {
+  const configId = parseInt(body.club_config_id, 10);
+  return {
+    club_speed:       toNumberOrNull(body.club_speed),
+    face_angle:       toNumberOrNull(body.face_angle),
+    offline_distance: toNumberOrNull(body.offline_distance),
+    club_config_id:   isNaN(configId) ? null : configId,
   };
 }
 
@@ -125,14 +158,20 @@ const createShot = async (req, res) => {
     });
   }
 
+  // Optional fields – not every launch monitor reports these.
+  const { club_speed, face_angle, offline_distance, club_config_id } = optionalFields(req.body);
+
   try {
     const result = await db.query(
       `INSERT INTO shots
-         (club, ball_speed, launch_angle, back_spin, side_spin, club_path, carry_distance, total_distance)
+         (club, ball_speed, launch_angle, back_spin, side_spin, club_path, carry_distance, total_distance,
+          club_speed, face_angle, offline_distance, club_config_id)
        VALUES
-         ($1,   $2,         $3,           $4,        $5,        $6,        $7,             $8)
+         ($1,   $2,         $3,           $4,        $5,        $6,        $7,             $8,
+          $9,         $10,        $11,              $12)
        RETURNING *`,
-      [club, ball_speed, launch_angle, back_spin, side_spin, club_path, carry_distance, total_distance]
+      [club, ball_speed, launch_angle, back_spin, side_spin, club_path, carry_distance, total_distance,
+       club_speed, face_angle, offline_distance, club_config_id]
     );
 
     // 201 Created is the semantically correct status for a successful INSERT.
@@ -189,20 +228,27 @@ const updateShot = async (req, res) => {
     });
   }
 
+  const { club_speed, face_angle, offline_distance, club_config_id } = optionalFields(req.body);
+
   try {
     const result = await db.query(
       `UPDATE shots
-       SET club            = $1,
-           ball_speed      = $2,
-           launch_angle    = $3,
-           back_spin       = $4,
-           side_spin       = $5,
-           club_path       = $6,
-           carry_distance  = $7,
-           total_distance  = $8
-       WHERE id = $9
+       SET club             = $1,
+           ball_speed       = $2,
+           launch_angle     = $3,
+           back_spin        = $4,
+           side_spin        = $5,
+           club_path        = $6,
+           carry_distance   = $7,
+           total_distance   = $8,
+           club_speed       = $9,
+           face_angle       = $10,
+           offline_distance = $11,
+           club_config_id   = $12
+       WHERE id = $13
        RETURNING *`,
-      [club, ball_speed, launch_angle, back_spin, side_spin, club_path, carry_distance, total_distance, id]
+      [club, ball_speed, launch_angle, back_spin, side_spin, club_path, carry_distance, total_distance,
+       club_speed, face_angle, offline_distance, club_config_id, id]
     );
 
     if (result.rows.length === 0) {

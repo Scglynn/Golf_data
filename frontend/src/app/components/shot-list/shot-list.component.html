@@ -41,10 +41,12 @@
         <thead class="table-dark">
           <tr>
             <th scope="col">Club</th>
+            <th scope="col" class="text-end">Club Speed<br><small class="fw-normal text-secondary">(mph)</small></th>
             <th scope="col" class="text-end">Ball Speed<br><small class="fw-normal text-secondary">(mph)</small></th>
+            <th scope="col" class="text-end">Smash</th>
             <th scope="col" class="text-end">Launch Angle<br><small class="fw-normal text-secondary">(°)</small></th>
             <th scope="col" class="text-end">Back Spin<br><small class="fw-normal text-secondary">(rpm)</small></th>
-            <th scope="col" class="text-end">Side Spin<br><small class="fw-normal text-secondary">(rpm)</small></th>
+            <th scope="col" class="text-end">Side Spin/Spin Axis<br><small class="fw-normal text-secondary">(rpm)</small></th>
             <th scope="col" class="text-end">Club Path<br><small class="fw-normal text-secondary">(°)</small></th>
             <th scope="col" class="text-end">Carry<br><small class="fw-normal text-secondary">(yds)</small></th>
             <th scope="col" class="text-end">Total<br><small class="fw-normal text-secondary">(yds)</small></th>
@@ -58,7 +60,13 @@
             <td class="fw-semibold">{{ shot.club }}</td>
 
             <!-- Numeric fields: right-aligned for easy visual scanning -->
+            <td class="text-end">
+              <ng-container *ngIf="shot.club_speed !== null; else noValue">{{ shot.club_speed | number:'1.1-1' }}</ng-container>
+            </td>
             <td class="text-end">{{ shot.ball_speed | number:'1.1-1' }}</td>
+            <td class="text-end">
+              <ng-container *ngIf="shot.club_speed; else noValue">{{ shot.ball_speed / shot.club_speed | number:'1.2-2' }}</ng-container>
+            </td>
             <td class="text-end">{{ shot.launch_angle | number:'1.1-1' }}</td>
             <td class="text-end">{{ shot.back_spin | number:'1.0-0' }}</td>
 
@@ -104,6 +112,9 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- Placeholder for optional fields that weren't recorded -->
+      <ng-template #noValue><span class="text-muted">&mdash;</span></ng-template>
     </div>
 
     <!-- Footer row showing the total count -->

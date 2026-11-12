@@ -1,0 +1,183 @@
+<!-- =============================================================================
+     my-bag.component.html – Club + shaft setups
+     ============================================================================= -->
+
+<div class="mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">My Bag</h2>
+    <a routerLink="/shaft-compare" class="btn btn-outline-success">Compare Shafts</a>
+  </div>
+
+  <p class="text-muted">
+    Add each club and shaft you want to test. When you log a shot, pick the setup you used.
+    After 10+ shots per setup, compare them on the Shaft Compare page.
+  </p>
+
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible" role="alert">
+    {{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Add / edit form -->
+    <div class="col-12 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+          <h5 class="mb-0">{{ editingId !== null ? 'Edit Setup' : 'Add Setup' }}</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="configForm" (ngSubmit)="onSubmit()" novalidate>
+
+            <div class="mb-3">
+              <label for="club" class="form-label fw-semibold">Club</label>
+              <select id="club" formControlName="club" class="form-select"
+                      [class.is-invalid]="getControl('club').invalid && getControl('club').touched">
+                <option value="" disabled>Select a club…</option>
+                <option *ngFor="let c of clubs" [value]="c">{{ c }}</option>
+              </select>
+              <div class="invalid-feedback">Please select a club.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="label" class="form-label fw-semibold">Shaft name</label>
+              <input id="label" type="text" formControlName="label" class="form-control"
+                     placeholder="e.g. Ventus Blue 6S"
+                     [class.is-invalid]="getControl('label').invalid && getControl('label').touched" />
+              <div class="invalid-feedback">Please name this setup.</div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label for="shaft_flex" class="form-label fw-semibold">Flex</label>
+                <select id="shaft_flex" formControlName="shaft_flex" class="form-select"
+                        [class.is-invalid]="getControl('shaft_flex').invalid && getControl('shaft_flex').touched">
+                  <option value="" disabled>Select…</option>
+                  <option *ngFor="let f of flexOptions" [value]="f.value">{{ f.label }}</option>
+                </select>
+                <div class="invalid-feedback">Please select a flex.</div>
+              </div>
+              <div class="col-6">
+                <label for="shaft_weight_g" class="form-label fw-semibold">
+                  Weight <span class="text-muted fw-normal">(g)</span>
+                </label>
+                <input id="shaft_weight_g" type="number" step="1" formControlName="shaft_weight_g"
+                       class="form-control" placeholder="e.g. 65"
+                       [class.is-invalid]="getControl('shaft_weight_g').invalid && getControl('shaft_weight_g').touched" />
+                <div class="invalid-feedback">Between 20 and 150 g.</div>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label for="kick_point" class="form-label fw-semibold">Kick point</label>
+                <select id="kick_point" formControlName="kick_point" class="form-select">
+                  <option [ngValue]="null">Unknown</option>
+                  <option *ngFor="let k of kickOptions" [ngValue]="k">{{ k }}</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="torque" class="form-label fw-semibold">
+                  Torque <span class="text-muted fw-normal">(°)</span>
+                </label>
+                <input id="torque" type="number" step="0.1" formControlName="torque"
+                       class="form-control" placeholder="e.g. 3.2"
+                       [class.is-invalid]="getControl('torque').invalid && getControl('torque').touched" />
+                <div class="invalid-feedback">Between 0 and 10°.</div>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label for="length_in" class="form-label fw-semibold">
+                  Length <span class="text-muted fw-normal">(in)</span>
+                </label>
+                <input id="length_in" type="number" step="0.25" formControlName="length_in"
+                       class="form-control" placeholder="e.g. 45.5"
+                       [class.is-invalid]="getControl('length_in').invalid && getControl('length_in').touched" />
+                <div class="invalid-feedback">Between 30 and 48 in.</div>
+              </div>
+              <div class="col-6">
+                <label for="loft" class="form-label fw-semibold">
+                  Loft <span class="text-muted fw-normal">(°)</span>
+                </label>
+                <input id="loft" type="number" step="0.5" formControlName="loft"
+                       class="form-control" placeholder="e.g. 10.5"
+                       [class.is-invalid]="getControl('loft').invalid && getControl('loft').touched" />
+                <div class="invalid-feedback">Between 0 and 70°.</div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+              <button type="submit" class="btn btn-success flex-grow-1">
+                {{ editingId !== null ? 'Save Changes' : 'Add to Bag' }}
+              </button>
+              <button *ngIf="editingId !== null" type="button" class="btn btn-outline-secondary"
+                      (click)="cancelEdit()">
+                Cancel
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Setup list -->
+    <div class="col-12 col-lg-7">
+
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-success" role="status">
+          <span class="visually-hidden">Loading…</span>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading && configs.length === 0 && !errorMessage" class="text-center py-5 text-muted">
+        <p class="fs-5">Your bag is empty.</p>
+        <p>Add your first club and shaft using the form.</p>
+      </div>
+
+      <div *ngIf="!isLoading && configs.length > 0" class="card shadow-sm">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover mb-0">
+            <thead class="table-dark">
+              <tr>
+                <th scope="col">Club</th>
+                <th scope="col">Shaft</th>
+                <th scope="col" class="text-center">Flex</th>
+                <th scope="col" class="text-end">Weight</th>
+                <th scope="col" class="text-center">Kick</th>
+                <th scope="col" class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of configs" [class.table-active]="c.id === editingId">
+                <td class="fw-semibold">{{ c.club }}</td>
+                <td>{{ c.label }}</td>
+                <td class="text-center">{{ c.shaft_flex }}</td>
+                <td class="text-end">
+                  <ng-container *ngIf="c.shaft_weight_g !== null; else noValue">{{ c.shaft_weight_g }} g</ng-container>
+                </td>
+                <td class="text-center">
+                  <ng-container *ngIf="c.kick_point; else noValue">{{ c.kick_point }}</ng-container>
+                </td>
+                <td class="text-center text-nowrap">
+                  <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="startEdit(c)">
+                    Edit
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteConfig(c)">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #noValue><span class="text-muted">&mdash;</span></ng-template>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

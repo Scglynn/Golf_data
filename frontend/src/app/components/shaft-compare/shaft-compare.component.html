@@ -1,0 +1,116 @@
+<!-- =============================================================================
+     shaft-compare.component.html – Compare shot stats between club setups
+     ============================================================================= -->
+
+<div class="mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Shaft Compare</h2>
+    <a routerLink="/bag" class="btn btn-outline-secondary">Manage Bag</a>
+  </div>
+
+  <p class="text-muted">
+    Pick a setup to see how it performs, or two setups for the same club to compare shafts.
+    The better fit is usually the one with equal or longer carry and a tighter spread.
+  </p>
+
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible" role="alert">
+    {{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+  </div>
+
+  <div *ngIf="configs.length === 0 && !errorMessage" class="text-center py-5 text-muted">
+    <p class="fs-5">No setups in your bag yet.</p>
+    <a routerLink="/bag" class="btn btn-outline-success">Add a club and shaft</a>
+  </div>
+
+  <!-- Setup pickers -->
+  <div *ngIf="configs.length > 0" class="row g-3 mb-4">
+    <div class="col-12 col-md-6">
+      <label for="setupA" class="form-label fw-semibold">Setup A</label>
+      <select id="setupA" class="form-select" [(ngModel)]="selectedA" (ngModelChange)="onSelectA()">
+        <option [ngValue]="null">Select a setup…</option>
+        <option *ngFor="let c of configs" [ngValue]="c.id">{{ c.club }} — {{ c.label }} ({{ c.shaft_flex }})</option>
+      </select>
+    </div>
+    <div class="col-12 col-md-6">
+      <label for="setupB" class="form-label fw-semibold">
+        Setup B <span class="badge text-bg-secondary fw-normal">optional</span>
+      </label>
+      <select id="setupB" class="form-select" [(ngModel)]="selectedB" (ngModelChange)="loadStats()"
+              [disabled]="optionsForB.length === 0">
+        <option [ngValue]="null">{{ selectedA === null ? 'Pick setup A first' : optionsForB.length === 0 ? 'No other setups for this club' : 'None' }}</option>
+        <option *ngFor="let c of optionsForB" [ngValue]="c.id">{{ c.label }} ({{ c.shaft_flex }})</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-success" role="status">
+      <span class="visually-hidden">Loading…</span>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!isLoading && results.length > 0">
+
+    <!-- Stats table -->
+    <div class="card shadow-sm mb-4">
+      <div class="table-responsive">
+        <table class="table table-striped mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Metric</th>
+              <th *ngFor="let r of results" scope="col" class="text-end">
+                {{ r.config.label }}
+                <br><small class="fw-normal text-secondary">{{ r.config.shaft_flex }} flex<ng-container *ngIf="r.config.shaft_weight_g">, {{ r.config.shaft_weight_g }} g</ng-container></small>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of metrics">
+              <td>
+                {{ m.label }}
+                <small *ngIf="m.unit" class="text-muted">({{ m.unit }})</small>
+              </td>
+              <td *ngFor="let r of results; let i = index" class="text-end"
+                  [class.better-value]="isBetter(m, i)">
+                <ng-container *ngIf="r.stats[m.key] !== null; else noValue">
+                  {{ r.stats[m.key] | number:m.format }}
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #noValue><span class="text-muted">&mdash;</span></ng-template>
+      </div>
+      <div *ngIf="results.length === 2" class="card-footer text-muted small">
+        <span class="better-value px-1">Highlighted</span> = better of the two.
+        Launch and spin aren't highlighted because the right number depends on the club — see the feedback below.
+      </div>
+    </div>
+
+    <!-- Shaft-fit feedback per setup -->
+    <div class="row g-4">
+      <div *ngFor="let r of results" class="col-12" [class.col-lg-6]="results.length === 2">
+        <div class="card shadow-sm h-100">
+          <div class="card-header">
+            <h5 class="mb-0">{{ r.config.label }} — Shaft Fit</h5>
+          </div>
+          <div class="card-body">
+            <div *ngFor="let item of r.feedback"
+                 class="alert"
+                 [class.alert-warning]="item.type === 'warning'"
+                 [class.alert-info]="item.type === 'info'"
+                 [class.alert-success]="item.type === 'success'"
+                 role="alert">
+              <strong>{{ item.message }}</strong>
+              <div class="mt-1 small">{{ item.tip }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+
+</div>
